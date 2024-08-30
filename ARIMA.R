@@ -6,9 +6,12 @@ library(tseries)
 Data <- read.csv("C:/Users/Windy/Desktop/Coding/R/Research/m2.csv")
 Data <- read.csv("C:/Users/Windy/Desktop/Coding/R/Research/m5.csv")
 
+x <- as.matrix(Data$Equity.Market.Index..Month.End..SET)
+po <- hp_filter(x,1600)
 
 data <- ts(Data[,2],frequency = 12)
 data <- ts(Data,frequency = 12)
+data <- ts(Data[,7],frequency = 12)
 data_diff <-(na.omit(data))
 
 adf.test(data)
@@ -33,5 +36,6 @@ for (l in 1:step) {
   mse[1,l] <- mean(actual_save[,l] - fcst_save[,l])^2
 
 }
+mse
 write.csv(mse, file = "mse_arima.csv", row.names = FALSE)
 write.csv(fcst_save, file = "arima.csv", row.names = FALSE)

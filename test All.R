@@ -15,13 +15,14 @@ colnames(data) <- c("x1","x2","x3","x4","x5","x6","x7","x8","x9","x10","x11","x1
 
 
   
-ll <- y ~ x1 +x17 +x4 +x5 +x6
+ll <- y ~ .
 li <- x2 +x9 +x10+x11 +x12 +x13 + x14  
 #--------------Johansen Cointegration---------------------
 library(urca)
 library(vars)
 library(tseries)
 datas <- ts(data[,c("y","x1","x15","x4","x5","x6")],frequency = 12)
+
 VARselect(data, lag.max = 100,type = "const")
 
 coin <- ca.jo(datas,type = "trace",ecdet ="const", K = 12)
@@ -58,6 +59,18 @@ library(car)
 model <- lm(ll, data = data)
 vif(model)
 summary(vif(model))
-
+#_________________________root test____________________
+library(tseries)
+at <- matrix(NA,ncol(data_diff),1)
+kt <- matrix(NA,ncol(data_diff),1)
+for (i in 1:ncol(data)){
+  
+  a <- adf.test(ts(data_diff[,i]))
+  k <- kpss.test(ts(data_diff[,i]))
+  at[i] <- a$p.value
+  kt[i] <- k$p.value
+}
+#combine
+cbind(at < 0.05 , kt > 0.05)
 
 

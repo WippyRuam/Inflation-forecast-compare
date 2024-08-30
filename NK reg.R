@@ -1,11 +1,13 @@
-Data <- read.csv("C:/Users/Windy/Desktop/Coding/R/Research/m2e.csv")
+library(lpirfs)
+
+Data <- read.csv("C:/Users/Windy/Desktop/Coding/R/Research/m2k.csv")
 
 
-data_ts <- na.omit(ts(Data[,2:8],frequency = 12))
+data_ts <- na.omit(ts(Data[,2:9],frequency = 12))
 data <- diff(data_ts,differences = 1)
-colnames(data) <- c("x1","x2","x3","x4","x5","y","x6")
+colnames(data) <- c("x1","x2","x3","x4","x5","y","x6","x7")
 
-nk <- y ~ x6 + x3 
+nk <- y ~ x6 + x4 
 
 model  <- lm(nk ,data = data)
 
@@ -20,10 +22,11 @@ fcst_value <- matrix(NA,nrow(data)-n,1)
 actual <- matrix(NA,nrow(data)-n,1)
 
 for (i in n:(nrow(data)-1)) {
-  datab1 <- data[i,"x5"]
+  datab1 <- data[i,"x4"]
   datab2 <- data[i,"x6"]
   fcst_value[(i-n)+1,] <- al+ (datab1*b1) + (datab2*b2) 
   actual[(i-n)+1,] <- data[i+1,6] 
 }
 
 mse <- mean(fcst_value - actual)^2
+fcst_value
